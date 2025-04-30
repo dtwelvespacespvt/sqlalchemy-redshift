@@ -6,6 +6,7 @@ from logging import getLogger
 
 import pkg_resources
 import sqlalchemy as sa
+from sqlalchemy.sql import text
 from packaging.version import Version
 from sqlalchemy import inspect
 from sqlalchemy.dialects.postgresql import DOUBLE_PRECISION
@@ -753,7 +754,7 @@ class RedshiftDialectMixin(DefaultDialect):
         )
         table_oid = 'NULL' if not table_oid else table_oid
 
-        result = connection.execute(sa.text("""
+        result = connection.execute(text("""
                         SELECT
                             cons.conname as name,
                             pg_get_constraintdef(cons.oid) as src
@@ -796,7 +797,7 @@ class RedshiftDialectMixin(DefaultDialect):
         schema_field = '"{schema}".'.format(schema=schema) if schema else ""
 
         result = connection.execute(
-            sa.text(
+            text(
                 """
                 select '{schema_field}"{table_name}"'::regclass::oid;
                 """.format(
@@ -894,7 +895,7 @@ class RedshiftDialectMixin(DefaultDialect):
         :meth:`~sqlalchemy.engine.interfaces.Dialect.get_view_definition`.
         """
         view = self._get_redshift_relation(connection, view_name, schema, **kw)
-        return sa.text(view.view_definition)
+        return text(view.view_definition)
 
     def get_indexes(self, connection, table_name, schema, **kw):
         """
@@ -1060,7 +1061,7 @@ class RedshiftDialectMixin(DefaultDialect):
             ) if table_name else ""
         )
 
-        result = connection.execute(sa.text("""
+        result = connection.execute(text("""
         SELECT
           c.relkind,
           n.oid as "schema_oid",
@@ -1122,7 +1123,7 @@ class RedshiftDialectMixin(DefaultDialect):
         )
 
         all_columns = defaultdict(list)
-        result = connection.execute(sa.text(REFLECTION_SQL.format(
+        result = connection.execute(text(REFLECTION_SQL.format(
             schema_clause=schema_clause,
             table_clause=table_clause
         )))
@@ -1147,7 +1148,7 @@ class RedshiftDialectMixin(DefaultDialect):
             ) if table_name else ""
         )
 
-        result = connection.execute(sa.text("""
+        result = connection.execute(text("""
         SELECT
           n.nspname as "schema",
           c.relname as "table_name",

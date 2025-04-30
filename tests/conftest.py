@@ -9,7 +9,7 @@ from logging import getLogger
 from rs_sqla_test_utils.db import EngineDefinition
 
 import pytest
-import sqlalchemy as sa
+from sqlalchemy.sql import text
 
 
 from rs_sqla_test_utils import db
@@ -189,9 +189,9 @@ class DatabaseTool(object):
 
         with self.engine.connect().execution_options(**opts) as conn:
             if isinstance(self.engine.dialect, RedshiftDialect_psycopg2cffi):
-                conn.execute(sa.text("COMMIT"))
+                conn.execute(text("COMMIT"))
             conn.execute(
-                sa.text('CREATE DATABASE {db_name}'.format(db_name=db_name))
+                text('CREATE DATABASE {db_name}'.format(db_name=db_name))
             )
 
         dburl = copy.deepcopy(self.engine.url)
@@ -210,9 +210,9 @@ class DatabaseTool(object):
                 if isinstance(
                         self.engine.dialect, RedshiftDialect_psycopg2cffi
                 ):
-                    conn.execute(sa.text("COMMIT"))
+                    conn.execute(text("COMMIT"))
                 conn.execute(
-                    sa.text('DROP DATABASE {db_name}'.format(db_name=db_name))
+                    text('DROP DATABASE {db_name}'.format(db_name=db_name))
                 )
 
     @contextlib.contextmanager

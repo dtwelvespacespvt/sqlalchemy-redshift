@@ -188,7 +188,7 @@ def visit_alter_table_append_command(element, compiler, **kw):
             source=compiler.preparer.format_table(element.source),
             fill_option=fill_option,
         )
-    return compiler.process(sa.text(query_text), **kw)
+    return compiler.process(text(query_text), **kw)
 
 
 class UnloadFromSelect(_ExecutableClause):
@@ -385,7 +385,7 @@ def visit_unload_from_select(element, compiler, **kw):
         ),
     )
 
-    query = sa.text(qs)
+    query = text(qs)
 
     if el.delimiter is not None:
         query = query.bindparams(sa.bindparam(
@@ -895,7 +895,7 @@ def visit_copy_command(element, compiler, **kw):
         parameters='\n'.join(parameters)
     )
 
-    return compiler.process(sa.text(qs).bindparams(*bindparams), **kw)
+    return compiler.process(text(qs).bindparams(*bindparams), **kw)
 
 
 class CreateLibraryCommand(_ExecutableClause):
@@ -995,7 +995,7 @@ def visit_create_library_command(element, compiler, **kw):
     query = query.format(name=quoted_lib_name,
                          or_replace='OR REPLACE' if element.replace else '',
                          region='REGION :region' if element.region else '')
-    return compiler.process(sa.text(query).bindparams(*bindparams), **kw)
+    return compiler.process(text(query).bindparams(*bindparams), **kw)
 
 
 class RefreshMaterializedView(_ExecutableClause):
