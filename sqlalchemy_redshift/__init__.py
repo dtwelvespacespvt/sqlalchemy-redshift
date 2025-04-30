@@ -29,7 +29,3 @@ registry.register(
     "redshift+redshift_connector", "sqlalchemy_redshift.dialect",
     "RedshiftDialect_redshift_connector"
 )
-
-
-from .dialect import RedshiftDialect_psycopg2
-dialect = RedshiftDialect_psycopg2
