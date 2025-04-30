@@ -1,7 +1,7 @@
 0.8.15 (unreleased)
 -------------------
 
-- Fix SQLAlchemy V2 support (https://github.com/sqlalchemy-redshift/sqlalchemy-redshift/pull/293).
+- Fix SQLAlchemy V2 support (https://github.com/sqlalchemy-redshift/sqlalchemy-redshift/pull/319).
 
 
 0.8.14 (2023-04-07)
