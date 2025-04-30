@@ -10,7 +10,7 @@ from rs_sqla_test_utils.db import EngineDefinition
 
 import pytest
 from sqlalchemy.sql import text
-
+import sqlalchemy as sa
 
 from rs_sqla_test_utils import db
 from rs_sqla_test_utils.utils import make_mock_engine

@@ -8,6 +8,7 @@ except ImportError:
     from collections import Iterable
 
 import sqlalchemy as sa
+from sqlalchemy.sql import text
 from sqlalchemy import exc as sa_exc
 from sqlalchemy.ext import compiler as sa_compiler
 from sqlalchemy.sql import expression as sa_expression
