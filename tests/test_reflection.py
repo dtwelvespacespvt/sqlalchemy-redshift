@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import MetaData, Table, inspect
 from sqlalchemy.schema import CreateTable
 from sqlalchemy.exc import NoSuchTableError
-import sqlalchemy as sa
+from sqlalchemy.sql import text
 
 from rs_sqla_test_utils import models, utils
 
@@ -195,7 +195,7 @@ def test_no_table_reflection(redshift_session):
 def test_no_search_path_leak(redshift_session):
     metadata = MetaData(bind=redshift_session.bind)
     Table('basic', metadata, autoload=True)
-    result = redshift_session.execute(sa.text("SHOW search_path"))
+    result = redshift_session.execute(text("SHOW search_path"))
     search_path = result.scalar()
     assert 'other_schema' not in search_path
 
@@ -208,8 +208,8 @@ def test_external_table_reflection(redshift_engine, iam_role_arn):
                     create external database if not exists;
                     """
     with redshift_engine.connect() as conn:
-        conn.execute(sa.text(schema_ddl))
-        conn.execute(sa.text('COMMIT'))
+        conn.execute(text(schema_ddl))
+        conn.execute(text('COMMIT'))
         insp = inspect(redshift_engine)
         all_schemas = insp.get_schema_names()
         assert 'bananas' in all_schemas
@@ -236,9 +236,9 @@ def test_external_table_reflection(redshift_engine, iam_role_arn):
     )
 
     with redshift_engine.connect().execution_options(**opts) as conn:
-        conn.execute(sa.text(table_ddl))
+        conn.execute(text(table_ddl))
         if isinstance(redshift_engine.dialect, RedshiftDialect_psycopg2cffi):
-            conn.execute(sa.text("COMMIT"))
+            conn.execute(text("COMMIT"))
 
         insp = inspect(redshift_engine)
         table_columns_definition = insp.get_columns(
@@ -251,12 +251,12 @@ def test_external_table_reflection(redshift_engine, iam_role_arn):
         assert 'pricepaid' in table_columns
 
         # Drop external table because we are using `AUTOCOMMIT`
-        conn.execute(sa.text("DROP TABLE IF EXISTS bananas.sales"))
+        conn.execute(text("DROP TABLE IF EXISTS bananas.sales"))
 
         # Also drop the external db:
         # https://docs.aws.amazon.com/redshift/latest/dg/r_DROP_DATABASE.html
         conn.execute(
-            sa.text("DROP SCHEMA IF EXISTS bananas DROP EXTERNAL DATABASE")
+            text("DROP SCHEMA IF EXISTS bananas DROP EXTERNAL DATABASE")
         )
         if isinstance(redshift_engine.dialect, RedshiftDialect_psycopg2cffi):
-            conn.execute(sa.text("COMMIT"))
+            conn.execute(text("COMMIT"))

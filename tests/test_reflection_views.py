@@ -1,6 +1,6 @@
 from sqlalchemy import MetaData, Table, inspect
 from sqlalchemy.schema import CreateTable
-import sqlalchemy as sa
+from sqlalchemy.sql import text
 from rs_sqla_test_utils.utils import clean, compile_query
 
 
@@ -16,9 +16,9 @@ def test_view_reflection(redshift_engine):
 
     with redshift_engine.connect() as conn:
         try:
-            conn.execute(sa.text(table_ddl))
-            conn.execute(sa.text(view_ddl))
-            conn.execute(sa.text("COMMIT"))
+            conn.execute(text(table_ddl))
+            conn.execute(text(view_ddl))
+            conn.execute(text("COMMIT"))
             insp = inspect(redshift_engine)
             view_definition = insp.get_view_definition('my_view')
             assert clean(
@@ -28,9 +28,9 @@ def test_view_reflection(redshift_engine):
                          autoload=True, autoload_with=redshift_engine)
             assert(len(view.columns) == 2)
         finally:
-            conn.execute(sa.text('DROP TABLE IF EXISTS my_table CASCADE'))
-            conn.execute(sa.text('DROP VIEW IF EXISTS my_view CASCADE'))
-            conn.execute(sa.text("COMMIT"))
+            conn.execute(text('DROP TABLE IF EXISTS my_table CASCADE'))
+            conn.execute(text('DROP VIEW IF EXISTS my_view CASCADE'))
+            conn.execute(text("COMMIT"))
 
 
 def test_late_binding_view_reflection(redshift_engine):
@@ -41,9 +41,9 @@ def test_late_binding_view_reflection(redshift_engine):
 
     with redshift_engine.connect() as conn:
         try:
-            conn.execute(sa.text(table_ddl))
-            conn.execute(sa.text(view_ddl))
-            conn.execute(sa.text("COMMIT"))
+            conn.execute(text(table_ddl))
+            conn.execute(text(view_ddl))
+            conn.execute(text("COMMIT"))
             insp = inspect(redshift_engine)
             view_definition = insp.get_view_definition('my_late_view')
 
@@ -55,6 +55,6 @@ def test_late_binding_view_reflection(redshift_engine):
                          autoload=True, autoload_with=redshift_engine)
             assert(len(view.columns) == 2)
         finally:
-            conn.execute(sa.text('DROP TABLE IF EXISTS my_table CASCADE'))
-            conn.execute(sa.text('DROP VIEW IF EXISTS my_late_view CASCADE'))
-            conn.execute(sa.text('COMMIT'))
+            conn.execute(text('DROP TABLE IF EXISTS my_table CASCADE'))
+            conn.execute(text('DROP VIEW IF EXISTS my_late_view CASCADE'))
+            conn.execute(text('COMMIT'))

@@ -1,3 +1,4 @@
+from sqlalchemy.sql import text
 import sqlalchemy as sa
 
 from sqlalchemy import event
@@ -151,7 +152,7 @@ class ReflectionCompositeForeignKeyConstraint(Base):
 class ReflectionDefaultValue(Base):
     __tablename__ = 'reflection_default_value'
     col1 = sa.Column(sa.Integer(), primary_key=True)
-    col2 = sa.Column(sa.Integer(), server_default=sa.text('5'))
+    col2 = sa.Column(sa.Integer(), server_default=text('5'))
     __table_args__ = (
         {'redshift_diststyle': 'EVEN'}
     )
